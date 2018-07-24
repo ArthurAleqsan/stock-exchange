@@ -1,0 +1,21 @@
+{
+  "name": "stock-exchange",
+  "version": "1.0.0",
+  "description": "'Get currencies of criptovalute from public API'",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autobahn": "^18.3.2",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  }
+}

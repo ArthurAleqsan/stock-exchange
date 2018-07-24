@@ -1,0 +1,18 @@
+.container-header {
+    color: #fff;
+    font-size: larger;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 18, 130, 0.5);
+    z-index: 2;
+}
+.news-item {
+    color: #fff;
+    height: 20%;
+    padding-left: 10px;
+    line-height: 20px;
+    box-shadow: 0 0 10px rgba(0, 18, 130, 0.5);
+    z-index: 2;
+    font-size: 14px;
+}

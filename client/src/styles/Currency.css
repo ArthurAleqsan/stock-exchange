@@ -1,0 +1,27 @@
+.currency-container {
+    display: flex;
+    flex-direction: column;
+}
+.currency-item {
+    display: flex;
+    justify-content: space-around;
+    color: #fff;
+    font-size: large;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    margin: 5px 0;
+    transition: background-color ease-in-out 1s;
+}
+.currency-item span {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    border-right: 1px solid #fff;
+}
+.currency-item:first-child {
+    font-size: larger;
+}
+.currency-item:hover {
+    background-color: #00121F;
+}

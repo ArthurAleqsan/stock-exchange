@@ -1,0 +1,26 @@
+.main{
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+}
+.header-name {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    background-color: #010D17;
+    color: #fff;
+    font-size: x-large;
+    padding: 10px 0;
+    margin: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    text-transform: uppercase;
+}
+.news-container {
+    background-color: #000A12;
+    width: 30vw;
+}
+.main-container{
+    background-color: #010D17;
+    width: 70vw;
+}
