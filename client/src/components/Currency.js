@@ -5,6 +5,7 @@ class Currency extends Component {
     render() {
         return (
             <div className="currency-container">
+                {/*{console.log(this.props.currency)}*/}
                 <div className="currency-item">
                     <span>Currency</span>
                     <span>Buy</span>

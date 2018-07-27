@@ -18,6 +18,7 @@ mongoose
     .connect(db)
     .then(() => console.log('mongoDb is connected'))
     .catch(err => console.log(err));
+mongoose.Promise = global.Promise;
 
 
 const port = process.env.PORT || 5000;

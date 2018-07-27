@@ -1,20 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const request = require('request');
-const currencyObj = {
-    'btc' : [],
-    'ltc' : [],
-    'eth' : [],
-    'xrp' : [],
-};
-//Load Models
-const Binance = require('./../model/Binance');
-// const Cryptocompare = require('./../model/Cryptocompare');
-// const Exmo = require('./../model/Exmo');
-// const Poloniex = require('./../model/Poloniex');
-// const Yobbit = require('./../model/Yobbit');
 
-
+//Load ModelS
+const CryptocompareBTCEUR = require('../model/CryptocompareBTCEUR');
+const CryptocompareBTCUSD = require('../model/CryptocompareBTCUSD');
+const CryptocompareBTCRUB = require('../model/CryptocompareBTCRUB');
+const CryptocompareLTCUSD = require('../model/CryptocompareLTCUSD');
+const CryptocompareLTCEUR = require('../model/CryptocompareLTCEUR');
+const CryptocompareLTCRUB = require('../model/CryptocompareLTCRUB');
+const CryptocompareETHUSD = require('../model/CryptocompareETHUSD');
+const CryptocompareETHEUR = require('../model/CryptocompareETHEUR');
+const CryptocompareETHRUB = require('../model/CryptocompareETHRUB');
+const CryptocompareXRPUSD = require('../model/CryptocompareXRPUSD');
+const CryptocompareXRPEUR = require('../model/CryptocompareXRPEUR');
+const CryptocompareXRPRUB = require('../model/CryptocompareXRPRUB');
+const ExmoBTC = require('../model/ExmoBTC');
+const ExmoLTC = require('../model/ExmoLTC');
+const ExmoXRP = require('../model/ExmoXRP');
+const ExmoETH = require('../model/ExmoETH');
+const BinanceBTC = require('../model/BinanceBTC');
+const BinanceLTC = require('../model/BinanceLTC');
+const BinanceXRP = require('../model/BinanceXRP');
+const BinanceETH = require('../model/BinanceETH');
+const PoloniexBTC = require('../model/PoloniexBTC');
+const PoloniexXRP = require('../model/PoloniexXRP');
+const PoloniexETH = require('../model/PoloniexETH');
+const YobbitBTCUSD = require('../model/YobbitBTCUSD');
+const YobbitBTCRUB = require('../model/YobbitBTCRUB');
+const YobbitETHRUB = require('../model/YobbitETHRUB');
+const YobbitETHUSD = require('../model/YobbitETHUSD');
+const YobbitLTCUSD = require('../model/YobbitLTCUSD');
+const YobbitLTCRUB = require('../model/YobbitLTCRUB');
+const YobbitXRPRUB = require('../model/YobbitXRPRUB');
+const YobbitXRPUSD = require('../model/YobbitXRPUSD');
 
 //Route  GET
 //Desc get Bitcoin currency
@@ -22,16 +41,15 @@ const Binance = require('./../model/Binance');
 router.get('/', (req, res) => {
             const currency = req.url.slice(1) ? req.url.slice(1):'btc';
 
-            // exmoGeter(currency);
+            exmoGeter(currency);
             yobbitGeterUsd(currency);
-            // yobbitGeterRur(currency);
-            // poloniexGeterLtc(currency);
-            // binanceGeterUsdt(currency);
-            // cryptocompareGeterUsd(currency);
-            // cryptocompareGeterEur(currency);
-            // cryptocompareGeterRub(currency);
-            res.json(currencyObj.btc);
-        });
+            yobbitGeterRur(currency);
+            poloniexGeterLtc(currency);
+            binanceGeterUsdt(currency);
+            cryptocompareGeterUsd(currency);
+            cryptocompareGeterEur(currency);
+            cryptocompareGeterRub(currency);
+});
 
 //Route  GET
 //Desc get ETH currency
@@ -40,14 +58,13 @@ router.get('/eth', (req, res) => {
     const currency = req.url.slice(1)? req.url.slice(1):'btc';
 
     exmoGeter(currency);
-    // yobbitGeterUsd(currency);
-    // yobbitGeterRur(currency);
-    // poloniexGeterLtc(currency);
-    // binanceGeterUsdt(currency);
-    // cryptocompareGeterUsd(currency);
-    // cryptocompareGeterEur(currency);
-    // cryptocompareGeterRub(currency);
-    res.json(currencyObj.eth);
+    yobbitGeterUsd(currency);
+    yobbitGeterRur(currency);
+    poloniexGeterLtc(currency);
+    binanceGeterUsdt(currency);
+    cryptocompareGeterUsd(currency);
+    cryptocompareGeterEur(currency);
+    cryptocompareGeterRub(currency);
 });
 
 //Route  GET
@@ -64,7 +81,6 @@ router.get('/xrp', (req, res) => {
     cryptocompareGeterUsd(currency);
     cryptocompareGeterEur(currency);
     cryptocompareGeterRub(currency);
-    res.json(currencyObj);
 });
 
 //Route  GET
@@ -81,7 +97,6 @@ router.get('/ltc', (req, res) => {
     cryptocompareGeterUsd(currency);
     cryptocompareGeterEur(currency);
     cryptocompareGeterRub(currency);
-    res.json(currencyObj);
 });
 
 async function exmoGeter (currency) {
@@ -90,6 +105,7 @@ async function exmoGeter (currency) {
             method: 'GET',
         },
         (err , resp, body) => {
+
             if(!err && resp.statusCode === 200) {
                 const _usd = {name : 'exmo-'+currency+'_usd'};
                 const _eur = {name : 'exmo-'+currency+'_eur'};
@@ -98,19 +114,57 @@ async function exmoGeter (currency) {
                 if(pairInfo[currency.toUpperCase()+'_USD']) {
                     _usd.currentBuyPrice = pairInfo[currency.toUpperCase()+'_USD'].buy_price ? pairInfo[currency.toUpperCase()+'_USD'].buy_price:'';
                     _usd.sellPrice = pairInfo[currency.toUpperCase()+'_USD'].sell_price?pairInfo[currency.toUpperCase()+'_USD'].sell_price:'';
-                    currencyObj[currency].push(_usd);
+
                 }
                 if(pairInfo[currency.toUpperCase()+'_EUR']) {
                     _eur.currentBuyPrice = pairInfo[currency.toUpperCase()+'_EUR'].buy_price?pairInfo[currency.toUpperCase()+'_EUR'].buy_price:'';
                     _eur.sellPrice = pairInfo[currency.toUpperCase()+'_EUR'].sell_price?pairInfo[currency.toUpperCase()+'_EUR'].sell_price:'';
-                    currencyObj[currency].push(_eur)
                 }
                 if(pairInfo[currency.toUpperCase()+'_RUB']) {
                     _rub.currentBuyPrice = pairInfo[currency.toUpperCase()+'_RUB'].buy_price?pairInfo[currency.toUpperCase()+'_RUB'].buy_price:'';
                     _rub.sellPrice = pairInfo[currency.toUpperCase()+'_RUB'].sell_price?pairInfo[currency.toUpperCase()+'_RUB'].sell_price:'';
-                    currencyObj[currency].push(_rub);
                 }
 
+                switch (currency) {
+                    case 'btc':
+                        var exmo = new ExmoBTC({
+                            obj: {
+                                _USD: _usd,
+                                _EUR: _eur,
+                                _RUB: _rub,
+                            }
+                        });
+                        break;
+                    case 'eth':
+                        var exmo = new ExmoETH({
+                            obj: {
+                                _USD: _usd,
+                                _EUR: _eur,
+                                _RUB: _rub,
+                            }
+                        });
+                        break;
+                    case 'xrp':
+                        var exmo = new ExmoXRP({
+                            obj: {
+                                _USD: _usd,
+                                _EUR: _eur,
+                                _RUB: _rub,
+                            }
+                        });
+                        break;
+                    case 'ltc':
+                        var exmo = new ExmoLTC({
+                            obj: {
+                                _USD: _usd,
+                                _EUR: _eur,
+                                _RUB: _rub,
+                            }
+                        });
+                }
+
+                exmo.save()
+                    .then(res => console.log(res));
             }
         })
 }
@@ -125,10 +179,40 @@ async function yobbitGeterUsd(currency) {
             if(pairInfo[currency+'_usd']) {
                 _usd.currentBuyPrice = pairInfo[currency+'_usd'].buy?pairInfo[currency+'_usd'].buy:'';
                 _usd.sellPrice = pairInfo[currency+'_usd'].sell?pairInfo[currency+'_usd'].sell:'';
-                currencyObj[currency].push(_usd);
+            }
+            switch (currency) {
+                case 'btc':
+                    var yobbit = new YobbitBTCUSD({
+                        obj: {
+                            BTC_USD: _usd,
+                        }
+                    });
+                    break;
+                case 'eth':
+                    var yobbit = new YobbitETHUSD({
+                        obj: {
+                            ETH_USD: _usd,
+                        }
+                    });
+                    break;
+                case 'xrp':
+                    var yobbit = new YobbitXRPUSD({
+                        obj: {
+                            XRP_USD: _usd,
+                        }
+                    });
+                    break;
+                case 'ltc':
+                    var yobbit = new YobbitLTCUSD({
+                        obj: {
+                            LTC_USD: _usd,
+                        }
+                    });
             }
 
-            // res.json(btc)
+            yobbit.save()
+                .then(res => console.log(res));
+
         } else{
             console.log(err)
         }
@@ -145,10 +229,39 @@ async function yobbitGeterRur(currency) {
                 if(pairInfo[currency+'_rur']) {
                     _rur.currentBuyPrice = pairInfo[currency+'_rur'].buy? pairInfo[currency+'_rur'].buy:'';
                     _rur.sellPrice = pairInfo[currency+'_rur'].sell? pairInfo[currency+'_rur'].sell:'';
-                    currencyObj[currency].push(_rur);
+                }
+                switch (currency) {
+                    case 'btc':
+                        var yobbit = new YobbitBTCRUB({
+                            obj: {
+                                BTC_RUB: _rur,
+                            }
+                        });
+                        break;
+                    case 'eth':
+                        var yobbit = new YobbitETHRUB({
+                            obj: {
+                                ETH_RUB: _rur,
+                            }
+                        });
+                        break;
+                    case 'xrp':
+                        var yobbit = new YobbitXRPRUB({
+                            obj: {
+                                XRP_RUB: _rur,
+                            }
+                        });
+                        break;
+                    case 'ltc':
+                        var yobbit = new YobbitLTCRUB({
+                            obj: {
+                                LTC_RUB: _rur,
+                            }
+                        });
                 }
 
-                // res.json(btc)
+                yobbit.save()
+                    .then(res => console.log(res));
             } else{
                 console.log(err)
             }
@@ -166,7 +279,34 @@ async function poloniexGeterLtc(currency) {
             if(pairInfo[currency.toUpperCase() + '_LTC']) {
                 _ltc.currentBuyPrice = pairInfo[currency.toUpperCase() + '_LTC'].highestBid?pairInfo[currency.toUpperCase() + '_LTC'].highestBid:'';
                 _ltc.sellPrice = pairInfo[currency.toUpperCase() + '_LTC'].lowestAsk?pairInfo[currency.toUpperCase() + '_LTC'].lowestAsk:'';
-                currencyObj[currency].push(_ltc);
+                switch (currency) {
+                    case 'btc':
+                        var poloniex = new PoloniexBTC({
+                            obj: {
+                                BTC_LTC: _ltc,
+                            }
+                        });
+                        break;
+                    case 'eth':
+                        var poloniex = new PoloniexETH({
+                            obj: {
+                                ETH_LTC: _ltc,
+                            }
+                        });
+                        break;
+                    case 'xrp':
+                        var poloniex = new PoloniexXRP({
+                            obj: {
+                                XRP_LTC: _ltc,
+                            }
+                        });
+                        break;
+                    case 'ltc':
+                        console.log('dont have LTC LTC pair')
+                }
+
+                poloniex.save()
+                    .then(res => console.log(res));
             }
 
         } else{
@@ -185,11 +325,45 @@ async function binanceGeterUsdt(currency) {
                 const _usdt = {name: 'binance-'+currency+'_usdt'};
                 const pairInfo = JSON.parse(body);
                 _usdt.currentBuyPrice = pairInfo.bidPrice;
-                currencyObj[currency].push(_usdt);
+                switch (currency) {
+                    case 'btc':
+                        var binance = new BinanceBTC({
+                            obj: {
+                                BTC_USD : _usdt,
+                            },
+                        });
+                        break;
+                    case 'eth':
+                        var binance = new BinanceETH({
+                            obj: {
+                                ETH_USD : _usdt,
+                            },
+                        });
+                        break;
+                    case 'xrp':
+                        var binance = new BinanceXRP({
+                            obj: {
+                                XRP_USD : _usdt,
+                            },
+                        });
+                        break;
+                    case 'ltc':
+                        var binance = new BinanceLTC({
+                            obj: {
+                                LTC_USD : _usdt,
+                            },
+                        });
+                        break;
+                }
+
+                binance.save()
+                    .then(res => console.log(res));
             }
+
             else{
                 console.log(err)
             }
+
         }
     )
 }
@@ -205,12 +379,44 @@ async function cryptocompareGeterUsd(currency) {
                 if(pairInfo.RAW[currency.toUpperCase()]) {
                     _usd.currentBuyPrice = pairInfo.RAW[currency.toUpperCase()].USD.PRICE ? pairInfo.RAW[currency.toUpperCase()].USD.PRICE : '';
                     _usd.sellPrice = _usd.currentBuyPrice;
-                    currencyObj[currency].push(_usd);
+                }
+                switch (currency) {
+                    case 'btc':
+                        var cryptocompare = new CryptocompareBTCUSD({
+                            obj: {
+                                BTC_USD : _usd,
+                            },
+                        });
+                        break;
+                    case 'eth':
+                        var cryptocompare = new CryptocompareETHUSD({
+                            obj: {
+                                ETH_USD : _usd,
+                            },
+                        });
+                        break;
+                    case 'xrp':
+                        var cryptocompare = new CryptocompareXRPUSD({
+                            obj: {
+                                XRP_USD : _usd,
+                            },
+                        });
+                        break;
+                    case 'ltc':
+                        var cryptocompare = new CryptocompareLTCUSD({
+                            obj: {
+                                LTC_USD : _usd,
+                            },
+                        });
+                        break;
                 }
 
+                cryptocompare.save()
+                    .then(res => console.log(res));
             } else{
                 console.log(err)
             }
+
         })
     }
 async function cryptocompareGeterEur(currency) {
@@ -225,12 +431,44 @@ async function cryptocompareGeterEur(currency) {
                 if(pairInfo.RAW[currency.toUpperCase()]) {
                     _eur.currentBuyPrice = pairInfo.RAW[currency.toUpperCase()].EUR.PRICE ? pairInfo.RAW[currency.toUpperCase()].EUR.PRICE : '';
                     _eur.sellPrice = _eur.currentBuyPrice;
-                    currencyObj[currency].push(_eur);
+                }
+                switch (currency) {
+                    case 'btc':
+                        var cryptocompare = new CryptocompareBTCEUR({
+                            obj: {
+                                BTC_EUR : _eur,
+                            },
+                        });
+                        break;
+                    case 'eth':
+                        var cryptocompare = new CryptocompareETHEUR({
+                            obj: {
+                                ETH_EUR : _eur,
+                            },
+                        });
+                        break;
+                    case 'xrp':
+                        var cryptocompare = new CryptocompareXRPEUR({
+                            obj: {
+                                XRP_EUR : _eur,
+                            },
+                        });
+                        break;
+                    case 'ltc':
+                        var cryptocompare = new CryptocompareLTCEUR({
+                            obj: {
+                                LTC_EUR : _eur,
+                            },
+                        });
+                        break;
                 }
 
+                cryptocompare.save()
+                    .then(res => console.log(res));
             } else{
                 console.log(err)
             }
+
         })
     }
 async function cryptocompareGeterRub(currency) {
@@ -245,12 +483,44 @@ async function cryptocompareGeterRub(currency) {
                 if(pairInfo.RAW[currency.toUpperCase()]) {
                     _rub.currentBuyPrice = pairInfo.RAW[currency.toUpperCase()].RUB.PRICE ? pairInfo.RAW[currency.toUpperCase()].RUB.PRICE : '';
                     _rub.sellPrice = _rub.currentBuyPrice;
-                    currencyObj[currency].push(_rub);
+                }
+                switch (currency) {
+                    case 'btc':
+                        var cryptocompare = new CryptocompareBTCRUB({
+                            obj: {
+                                BTC_RUB : _rub,
+                            },
+                        });
+                        break;
+                    case 'eth':
+                        var cryptocompare = new CryptocompareETHRUB({
+                            obj: {
+                                ETH_RUB : _rub,
+                            },
+                        });
+                        break;
+                    case 'xrp':
+                        var cryptocompare = new CryptocompareXRPRUB({
+                            obj: {
+                                XRP_RUB : _rub,
+                            },
+                        });
+                        break;
+                    case 'ltc':
+                        var cryptocompare = new CryptocompareLTCRUB({
+                            obj: {
+                                LTC_RUB : _rub,
+                            },
+                        });
+                        break;
                 }
 
+                cryptocompare.save()
+                    .then(res => console.log(res));
             } else{
-                throw(err)
+                console.log(err)
             }
+
         })
     }
 
