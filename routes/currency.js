@@ -49,6 +49,7 @@ router.get('/', (req, res) => {
             cryptocompareGeterUsd(currency);
             cryptocompareGeterEur(currency);
             cryptocompareGeterRub(currency);
+
 });
 
 //Route  GET
@@ -98,6 +99,7 @@ router.get('/ltc', (req, res) => {
     cryptocompareGeterEur(currency);
     cryptocompareGeterRub(currency);
 });
+
 
 async function exmoGeter (currency) {
     request({
@@ -162,7 +164,7 @@ async function exmoGeter (currency) {
                             }
                         });
                 }
-
+                console.log(exmo)
                 exmo.save()
                     .then(res => console.log(res));
             }
@@ -219,53 +221,53 @@ async function yobbitGeterUsd(currency) {
     })
 }
 async function yobbitGeterRur(currency) {
-        request({
-            url: 'https://yobit.net/api/3/ticker/'+currency+'_rur',
-            method: 'GET',
-        }, (err, resp, body) => {
-            if(!err && resp.statusCode === 200) {
-                const _rur = {name: 'yobit-'+currency+'-rur'};
-                const pairInfo = JSON.parse(body);
-                if(pairInfo[currency+'_rur']) {
-                    _rur.currentBuyPrice = pairInfo[currency+'_rur'].buy? pairInfo[currency+'_rur'].buy:'';
-                    _rur.sellPrice = pairInfo[currency+'_rur'].sell? pairInfo[currency+'_rur'].sell:'';
-                }
-                switch (currency) {
-                    case 'btc':
-                        var yobbit = new YobbitBTCRUB({
-                            obj: {
-                                BTC_RUB: _rur,
-                            }
-                        });
-                        break;
-                    case 'eth':
-                        var yobbit = new YobbitETHRUB({
-                            obj: {
-                                ETH_RUB: _rur,
-                            }
-                        });
-                        break;
-                    case 'xrp':
-                        var yobbit = new YobbitXRPRUB({
-                            obj: {
-                                XRP_RUB: _rur,
-                            }
-                        });
-                        break;
-                    case 'ltc':
-                        var yobbit = new YobbitLTCRUB({
-                            obj: {
-                                LTC_RUB: _rur,
-                            }
-                        });
-                }
-
-                yobbit.save()
-                    .then(res => console.log(res));
-            } else{
-                console.log(err)
+    request({
+        url: 'https://yobit.net/api/3/ticker/'+currency+'_rur',
+        method: 'GET',
+    }, (err, resp, body) => {
+        if(!err && resp.statusCode === 200) {
+            const _rur = {name: 'yobit-'+currency+'-rur'};
+            const pairInfo = JSON.parse(body);
+            if(pairInfo[currency+'_rur']) {
+                _rur.currentBuyPrice = pairInfo[currency+'_rur'].buy? pairInfo[currency+'_rur'].buy:'';
+                _rur.sellPrice = pairInfo[currency+'_rur'].sell? pairInfo[currency+'_rur'].sell:'';
             }
-        })
+            switch (currency) {
+                case 'btc':
+                    var yobbit = new YobbitBTCRUB({
+                        obj: {
+                            BTC_RUB: _rur,
+                        }
+                    });
+                    break;
+                case 'eth':
+                    var yobbit = new YobbitETHRUB({
+                        obj: {
+                            ETH_RUB: _rur,
+                        }
+                    });
+                    break;
+                case 'xrp':
+                    var yobbit = new YobbitXRPRUB({
+                        obj: {
+                            XRP_RUB: _rur,
+                        }
+                    });
+                    break;
+                case 'ltc':
+                    var yobbit = new YobbitLTCRUB({
+                        obj: {
+                            LTC_RUB: _rur,
+                        }
+                    });
+            }
+
+            yobbit.save()
+                .then(res => console.log(res));
+        } else{
+            console.log(err)
+        }
+    })
 
 }
 async function poloniexGeterLtc(currency) {
@@ -317,7 +319,7 @@ async function poloniexGeterLtc(currency) {
 
 }
 async function binanceGeterUsdt(currency) {
-        request({
+    request({
             url: 'https://api.binance.com/api/v1/ticker/24hr?symbol='+currency.toUpperCase()+'USDT',
             method: 'GET'
         }, (err, resp, body) => {
@@ -418,7 +420,7 @@ async function cryptocompareGeterUsd(currency) {
             }
 
         })
-    }
+}
 async function cryptocompareGeterEur(currency) {
     request({
             url: 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+currency.toUpperCase()+'&tsyms=EUR',
@@ -470,7 +472,7 @@ async function cryptocompareGeterEur(currency) {
             }
 
         })
-    }
+}
 async function cryptocompareGeterRub(currency) {
     request({
             url: 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+currency.toUpperCase()+'&tsyms=RUB',
@@ -522,8 +524,7 @@ async function cryptocompareGeterRub(currency) {
             }
 
         })
-    }
-
+}
 
 
 module.exports = router;
